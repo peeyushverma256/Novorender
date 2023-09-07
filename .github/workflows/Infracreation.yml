@@ -1,0 +1,58 @@
+
+# This is a resource creation bicep deployment script
+name: Resource creation
+on:
+  pull_request:
+    branches: 
+      - Development # Specific branch (Development /Test /Production)
+    paths:
+      - 'logicapp/**' #Path of your application
+    types: 
+      - closed
+
+      
+permissions:
+      id-token: write
+      contents: read
+env:
+      ResourceGroupName: novorenderrg
+      ResourceGroupLocation: "northeurope"
+jobs:
+
+  Deployment:
+    runs-on: windows-latest
+    permissions: write-all
+    environment: dev
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to azure
+        uses: azure/login@v1
+        with:
+         client-id: ${{ secrets.AZURE_CLIENT_ID }}
+         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }} 
+         enable-AzPSSession: true
+      - name: create resource group
+        uses: azure/arm-deploy@v1
+        with:
+            subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+            resourceGroupName: ${{ env.ResourceGroupName }}
+            scope: subscription
+            region: ${{ env.ResourceGroupLocation }}
+            template: './Scripts/rg.bicep'
+            parameters: rgname=${{ env.ResourceGroupName }} location=${{ env.ResourceGroupLocation }}
+      - name: Message to Developer
+        shell: pwsh
+        run: |
+          write-output "Your Resource Group is ${{ env.ResourceGroupName }}"    
+      - name: Deploy main bicep
+        uses: azure/arm-deploy@v1
+        with:
+            subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+            resourceGroupName: ${{ env.ResourceGroupName }}
+            template: './logicapp/main.bicep'
+            parameters: ./logicapp/parameter-Dev.json
+      - name: End Message to Developer
+        shell: pwsh
+        run: |
+          write-output "All the resources have been created successfully "           
