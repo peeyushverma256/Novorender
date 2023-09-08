@@ -11,12 +11,11 @@ on:
     types: 
       - closed
 
-      
 permissions:
       id-token: write
       contents: read
 env:
-      ResourceGroupName: novorenderrgtest
+      ResourceGroupName: novorenderrgtest1
       ResourceGroupLocation: "northeurope"
       storageName: novorendertest1
       applicationInsightsName: novorenderappinsighttest1
