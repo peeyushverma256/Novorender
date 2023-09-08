@@ -7,6 +7,7 @@ on:
       - Development # Specific branch (Development /Test /Production)
     paths:
       - 'logicapp/**' #Path of your application
+      - '.github/workflows/Infracreation.yml'
     types: 
       - closed
 
@@ -15,10 +16,10 @@ permissions:
       id-token: write
       contents: read
 env:
-      ResourceGroupName: novorenderrg
+      ResourceGroupName: novorenderrgtest
       ResourceGroupLocation: "northeurope"
-      storageName: novorendertest
-      applicationInsightsName: novorenderappinsighttest
+      storageName: novorendertest1
+      applicationInsightsName: novorenderappinsighttest1
 jobs:
 
   Deployment:
