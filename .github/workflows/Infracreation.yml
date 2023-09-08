@@ -17,7 +17,8 @@ permissions:
 env:
       ResourceGroupName: novorenderrg
       ResourceGroupLocation: "northeurope"
-      storageName: novorendersample
+      storageName: novorendertest
+      applicationInsightsName: novorenderappinsighttest
 jobs:
 
   Deployment:
@@ -46,13 +47,20 @@ jobs:
         shell: pwsh
         run: |
           write-output "Your Resource Group is ${{ env.ResourceGroupName }}"    
-      - name: Deploy main bicep
+      - name: Deploy storage bicep
         uses: azure/arm-deploy@v1
         with:
             subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
             resourceGroupName: ${{ env.ResourceGroupName }}
             template: './logicapp/main.bicep'
             parameters: storageName=${{ env.storageName }}
+      - name: Deploy appinsight bicep
+        uses: azure/arm-deploy@v1
+        with:
+            subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+            resourceGroupName: ${{ env.ResourceGroupName }}
+            template: './logicapp/appinsight.bicep'
+            parameters: applicationInsightsName=${{ env.applicationInsightsName }}
       - name: End Message to Developer
         shell: pwsh
         run: |
